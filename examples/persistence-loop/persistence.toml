@@ -1,0 +1,59 @@
+# Persistence Loop Configuration
+# A loop that survives session restarts using state persistence and the stop hook
+#
+# The key insight: "The boulder never stops"
+# When a stop hook fires but tasks remain, the agent continues working.
+#
+# Usage: ralph run --config persistence.toml "Complete all tasks in tasks.jsonl"
+
+[agent]
+name = "persistent-worker"
+description = "Agent with session persistence — survives restarts"
+model = "sonnet"
+max_tokens = 8192
+
+[loop]
+max_iterations = 200               # High limit for persistent work
+checkpoint_interval = 3            # Frequent checkpoints for resilience
+timeout_minutes = 480              # 8 hours — for long-running work
+completion_signal = "LOOP_COMPLETE"
+
+[loop.persistence]
+enabled = true
+state_file = ".ralph/loop-state.json"
+resume_on_start = true             # Auto-resume from last checkpoint
+checkpoint_includes = [
+    "iteration",
+    "current_hat",
+    "task_progress",
+    "memory_snapshot",
+    "cost_accumulator",
+]
+
+[loop.backpressure]
+build = "npm run build"
+lint = "npm run lint"
+
+[loop.stop_hook]
+# Script that runs when a stop signal is received
+script = "bash stop-hook.sh"
+# If the hook returns "continue", the loop keeps going
+# If the hook returns "stop", the loop terminates
+behavior = "check_and_decide"
+
+[events]
+subscribes = ["task.assigned", "session.resume"]
+publishes = ["task.complete", "session.checkpoint", "human.interact"]
+
+[context]
+always_include = [
+    ".ralph/loop-state.json",
+    ".ralph/agent/memories.md",
+    ".ralph/agent/tasks.jsonl",
+]
+index_dirs = ["src/"]
+
+[memory]
+types = ["Patterns", "Decisions", "Fixes", "Context"]
+persist_path = ".ralph/agent/memories.md"
+max_entries = 100                  # Prune old entries to keep context fresh

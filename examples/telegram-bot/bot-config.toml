@@ -1,0 +1,70 @@
+# Telegram Bot Configuration for Ralph
+# Provides a remote control plane for monitoring and steering agent loops
+#
+# Setup: See docs/telegram-setup.md for step-by-step instructions
+# Usage: ralph run --config ../basic-loop/loop.toml --telegram bot-config.toml
+
+[telegram]
+# Bot token from @BotFather (store in env, never commit)
+bot_token_env = "RALPH_TELEGRAM_BOT_TOKEN"
+
+# Your Telegram chat ID (get it from @userinfobot)
+chat_id_env = "RALPH_TELEGRAM_CHAT_ID"
+
+# Enable/disable the bot
+enabled = true
+
+[telegram.notifications]
+# When to send notifications
+on_iteration_start = false         # Too noisy for most use cases
+on_iteration_complete = false      # Also noisy
+on_checkpoint = true               # Every N iterations (see loop.checkpoint_interval)
+on_human_interact = true           # Agent needs human input — ALWAYS notify
+on_error = true                    # Something went wrong
+on_loop_complete = true            # Task finished
+on_merge_complete = true           # Parallel merge succeeded
+on_merge_failed = true             # Parallel merge failed
+
+[telegram.notifications.format]
+# Message templates (supports {variables})
+checkpoint = """
+Checkpoint — Iteration {iteration}/{max_iterations}
+Hat: {current_hat}
+Status: {status}
+Memory: {memory_summary}
+"""
+
+human_interact = """
+NEEDS INPUT — {agent_name}
+Question: {question}
+Reply to approve, or send guidance.
+"""
+
+loop_complete = """
+COMPLETE — {agent_name}
+Iterations: {iterations_used}
+Duration: {duration}
+Result: {completion_summary}
+"""
+
+[telegram.commands]
+# Available bot commands (registered with BotFather)
+enabled = [
+    "status",    # /status — Current loop state, iteration, hat
+    "pause",     # /pause — Pause the loop after current iteration
+    "resume",    # /resume — Resume a paused loop
+    "approve",   # /approve — Approve a pending human.interact request
+    "reject",    # /reject [reason] — Reject with feedback
+    "metrics",   # /metrics — Token usage, cost, timing stats
+    "kill",      # /kill — Force-stop the loop immediately
+    "guidance",  # /guidance [text] — Send guidance to the agent
+    "logs",      # /logs [n] — Last N log entries
+]
+
+[telegram.interaction]
+# Human-in-the-loop settings
+timeout_seconds = 300              # Wait 5 min for human response
+timeout_action = "continue"        # On timeout: "continue", "pause", or "abort"
+routing = "primary"                # Route to primary loop only
+retry_attempts = 3                 # Retry failed message sends
+retry_backoff = "exponential"      # Backoff strategy for retries

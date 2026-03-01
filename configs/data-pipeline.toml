@@ -1,0 +1,82 @@
+# Ralph Hat Configuration: Data Pipeline Engineering
+# Defines agent capabilities for ETL, data processing, and analytics
+#
+# Usage: ralph run --hat data-pipeline.toml "Build the user events ETL pipeline"
+
+[agent]
+name = "data-pipeline"
+description = "Data engineering specialist for ETL pipelines, transformations, and analytics"
+model = "sonnet"
+max_tokens = 8192
+temperature = 0.1
+
+[agent.identity]
+role = "Senior Data Engineer"
+expertise = [
+    "Python", "SQL", "Spark", "Airflow",
+    "pandas", "polars", "dbt",
+    "PostgreSQL", "BigQuery", "Snowflake",
+    "Parquet", "Avro", "JSON/NDJSON",
+    "Data Quality", "Schema Evolution",
+    "Batch Processing", "Stream Processing"
+]
+
+[tools]
+allowed = [
+    "Edit", "Write", "Read", "Glob", "Grep",
+    "Bash",
+    "WebFetch",
+]
+denied = [
+    "DROP TABLE",
+    "TRUNCATE",
+    "DELETE FROM * WHERE 1=1",
+    "git push --force",
+]
+
+[tools.bash]
+allow_patterns = [
+    "python *", "pip *", "poetry *",
+    "dbt *",
+    "psql *",
+    "airflow *",
+    "spark-submit *",
+    "curl *",
+    "git status", "git diff", "git add", "git commit",
+    "ls *", "cat *", "mkdir *", "wc *",
+]
+
+[mcp]
+servers = [
+    { name = "filesystem", command = "npx @anthropic-ai/mcp-filesystem" },
+    { name = "postgres",   command = "npx @anthropic-ai/mcp-postgres", env = { DATABASE_URL = "$DATABASE_URL" } },
+]
+
+[loop]
+max_iterations = 40
+checkpoint_interval = 5
+timeout_minutes = 120              # Data pipelines can take longer to validate
+completion_signal = "LOOP_COMPLETE"
+
+[loop.backpressure]
+lint = "ruff check ."
+typecheck = "mypy src/"
+test = "pytest tests/ -v"
+data_quality = "python scripts/validate_schema.py"
+
+[events]
+subscribes = ["plan.complete", "schema.approved"]
+publishes = ["pipeline.complete", "data.validated", "human.interact"]
+
+[context]
+always_include = [
+    "pyproject.toml",
+    "README.md",
+    "schemas/",
+    "dbt_project.yml",
+]
+index_dirs = ["src/", "pipelines/", "models/", "tests/"]
+
+[memory]
+types = ["Patterns", "Decisions", "Fixes", "Context"]
+persist_path = ".ralph/agent/memories.md"

@@ -1,0 +1,51 @@
+# Parallel Agents Configuration
+# Run multiple agents simultaneously in isolated git worktrees
+#
+# Usage: ralph run --config parallel.toml --parallel 5 --tasks tasks.jsonl
+
+[agent]
+name = "parallel-worker"
+description = "Worker agent for parallel task execution"
+model = "sonnet"
+max_tokens = 4096
+
+[parallel]
+max_workers = 10                   # Maximum simultaneous agents
+worktree_base = ".worktrees"       # Base directory for git worktrees
+isolation = "worktree"             # Each agent gets its own worktree
+merge_strategy = "queue"           # Use the event-sourced merge queue
+
+[parallel.shared]
+# These paths are symlinked into each worktree so agents share knowledge
+symlinks = [
+    ".ralph/agent/memories.md",    # Shared memories across agents
+    ".ralph/agent/tasks.jsonl",    # Shared task tracking
+    "specs/",                       # Shared specifications
+]
+
+[loop]
+max_iterations = 30
+checkpoint_interval = 5
+timeout_minutes = 60
+completion_signal = "LOOP_COMPLETE"
+
+[loop.backpressure]
+build = "npm run build"
+lint = "npm run lint"
+test = "npm run test"
+
+[merge_queue]
+# Event-sourced merge queue configuration
+log_path = ".ralph/merge-queue.jsonl"
+lock_path = ".ralph/loop.lock"
+auto_merge = true                  # Primary loop auto-merges completed worktrees
+retry_on_conflict = true           # Retry merge after rebase on conflict
+max_retry = 3                      # Max merge retry attempts
+
+[events]
+subscribes = ["task.assigned"]
+publishes = ["task.complete", "merge.ready", "human.interact"]
+
+[context]
+always_include = ["README.md", "package.json"]
+index_dirs = ["src/"]

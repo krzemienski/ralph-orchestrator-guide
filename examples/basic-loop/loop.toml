@@ -1,0 +1,24 @@
+# Basic Ralph Loop Configuration
+# The simplest possible loop — one agent, one task, iterate until done
+#
+# Usage: ralph run --config loop.toml "Fix the login page CSS"
+
+[agent]
+name = "basic-worker"
+description = "General-purpose development agent"
+model = "sonnet"
+max_tokens = 4096
+
+[loop]
+max_iterations = 20                # Stop after 20 iterations max
+checkpoint_interval = 5            # Save state every 5 iterations
+timeout_minutes = 30               # Max 30 minutes wall-clock
+completion_signal = "LOOP_COMPLETE"
+
+[loop.backpressure]
+# At minimum, verify the project builds
+build = "npm run build"
+
+[context]
+always_include = ["README.md", "package.json"]
+index_dirs = ["src/"]

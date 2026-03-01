@@ -1,0 +1,79 @@
+# Ralph Hat Configuration: Web Frontend Development
+# Defines agent capabilities for React/Next.js/Vue projects
+#
+# Usage: ralph run --hat web-frontend.toml "Build the dashboard page"
+
+[agent]
+name = "web-frontend"
+description = "Web frontend specialist for React, Next.js, and Vue projects"
+model = "sonnet"                   # Balanced speed/quality for implementation
+max_tokens = 8192
+temperature = 0.1                  # Low temperature for consistent code output
+
+[agent.identity]
+role = "Senior Frontend Engineer"
+expertise = [
+    "React", "Next.js", "Vue", "TypeScript",
+    "TailwindCSS", "CSS Modules", "Responsive Design",
+    "State Management (Zustand, Redux, Pinia)",
+    "API Integration", "Performance Optimization"
+]
+
+[tools]
+# Tools the agent is permitted to use
+allowed = [
+    "Edit", "Write", "Read", "Glob", "Grep",
+    "Bash",          # For npm/pnpm/yarn commands, builds, dev server
+    "WebFetch",      # For checking API endpoints, docs
+]
+# Tools explicitly denied (safety rails)
+denied = [
+    "git push",       # No pushing without human review
+    "rm -rf",         # No recursive deletes
+    "DROP TABLE",     # No destructive DB operations
+]
+
+[tools.bash]
+# Allowed bash command patterns
+allow_patterns = [
+    "npm *", "npx *", "pnpm *", "yarn *",
+    "node *", "tsc *",
+    "curl *", "wget *",
+    "git status", "git diff", "git add", "git commit",
+    "ls *", "cat *", "mkdir *",
+]
+
+[mcp]
+# MCP servers available to this hat
+servers = [
+    { name = "filesystem", command = "npx @anthropic-ai/mcp-filesystem" },
+    { name = "browser",    command = "npx @anthropic-ai/mcp-browser" },
+]
+
+[loop]
+max_iterations = 50                # Safety limit
+checkpoint_interval = 5            # Save state every 5 iterations
+timeout_minutes = 60               # Max wall-clock time
+completion_signal = "LOOP_COMPLETE"
+
+[loop.backpressure]
+# Gates that reject bad work
+lint = "npm run lint"
+typecheck = "npx tsc --noEmit"
+build = "npm run build"
+
+[events]
+# Hat event subscriptions and publications
+subscribes = ["plan.complete", "design.complete"]
+publishes = ["code.complete", "human.interact"]
+
+[context]
+# Files always included in the agent's context
+always_include = [
+    "package.json",
+    "tsconfig.json",
+    "README.md",
+    "src/types/**/*.ts",
+]
+# Directories to index for code search
+index_dirs = ["src/", "components/", "pages/", "app/"]

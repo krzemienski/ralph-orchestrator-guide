@@ -1,0 +1,91 @@
+# Ralph Hat Configuration: iOS/macOS Mobile Development
+# Defines agent capabilities for Swift/SwiftUI projects
+#
+# Usage: ralph run --hat ios-mobile.toml "Implement the settings screen"
+
+[agent]
+name = "ios-mobile"
+description = "iOS/macOS specialist for Swift and SwiftUI development"
+model = "sonnet"
+max_tokens = 8192
+temperature = 0.1
+
+[agent.identity]
+role = "Senior iOS Engineer"
+expertise = [
+    "Swift", "SwiftUI", "UIKit",
+    "Combine", "async/await", "Actors",
+    "Core Data", "SwiftData",
+    "Xcode", "XcodeGen", "SPM",
+    "StoreKit", "CloudKit", "WidgetKit",
+    "Accessibility", "Localization",
+    "App Store Review Guidelines"
+]
+
+[tools]
+allowed = [
+    "Edit", "Write", "Read", "Glob", "Grep",
+    "Bash",
+    "WebFetch",
+]
+denied = [
+    "git push --force",
+    "rm -rf ~/Library/Developer/Xcode/DerivedData",  # Warn, don't auto-delete
+    "xcrun simctl delete all",                         # Never mass-delete simulators
+]
+
+[tools.bash]
+allow_patterns = [
+    "xcodebuild *",
+    "swift *",
+    "xcrun simctl *",
+    "xcodegen *",
+    "fastlane *",
+    "pod *", "carthage *",
+    "curl *",
+    "git status", "git diff", "git add", "git commit",
+    "ls *", "cat *", "mkdir *",
+    "lsof -i *",       # Port checks
+    "idb *",            # Simulator interaction
+]
+
+[mcp]
+servers = [
+    { name = "filesystem", command = "npx @anthropic-ai/mcp-filesystem" },
+]
+
+[loop]
+max_iterations = 50
+checkpoint_interval = 5
+timeout_minutes = 90
+completion_signal = "LOOP_COMPLETE"
+
+[loop.backpressure]
+# iOS build verification
+build_ios = "xcodebuild -scheme $SCHEME -destination 'id=$SIMULATOR_UDID' -quiet"
+build_macos = "xcodebuild -scheme $MACOS_SCHEME -destination 'platform=macOS' -quiet"
+lint = "swiftlint lint --quiet"
+
+[events]
+subscribes = ["plan.complete", "design.complete"]
+publishes = ["code.complete", "build.complete", "human.interact"]
+
+[context]
+always_include = [
+    "Package.swift",
+    "project.yml",
+    "CLAUDE.md",
+    ".claude/rules/project.md",
+]
+index_dirs = ["Sources/", "ILSApp/", "Tests/"]
+
+[simulator]
+# Dedicated simulator configuration
+udid = "$SIMULATOR_UDID"
+device = "iPhone 16 Pro Max"
+os = "iOS 18.6"
+# CRITICAL: Never use other simulators — they belong to other sessions
+
+[memory]
+types = ["Patterns", "Decisions", "Fixes", "Context"]
+persist_path = ".ralph/agent/memories.md"

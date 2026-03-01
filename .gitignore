@@ -1,0 +1,47 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment / Secrets
+.env
+.env.*
+*.env
+
+# Ralph state (generated at runtime)
+.ralph/
+.worktrees/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+.pytest_cache/
+venv/
+.venv/
+
+# Node (if using npm-based MCP servers)
+node_modules/
+
+# Build artifacts
+target/
+build/
+dist/
+
+# Logs
+*.log
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Task files (generated)
+tasks.jsonl

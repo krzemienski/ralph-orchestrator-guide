@@ -1,0 +1,80 @@
+# Ralph Hat Configuration: Systems / Backend Development
+# Defines agent capabilities for backend, infrastructure, and systems work
+#
+# Usage: ralph run --hat systems.toml "Implement the authentication service"
+
+[agent]
+name = "systems"
+description = "Backend and systems specialist for APIs, databases, and infrastructure"
+model = "sonnet"
+max_tokens = 8192
+temperature = 0.1
+
+[agent.identity]
+role = "Senior Backend Engineer"
+expertise = [
+    "Rust", "Go", "Python", "Node.js",
+    "PostgreSQL", "Redis", "SQLite",
+    "REST APIs", "gRPC", "GraphQL",
+    "Docker", "Kubernetes", "Terraform",
+    "Security", "Performance", "Observability"
+]
+
+[tools]
+allowed = [
+    "Edit", "Write", "Read", "Glob", "Grep",
+    "Bash",
+    "WebFetch",
+]
+denied = [
+    "git push --force",
+    "DROP DATABASE",
+    "rm -rf /",
+]
+
+[tools.bash]
+allow_patterns = [
+    "cargo *", "go *", "python *", "pip *",
+    "docker *", "docker-compose *",
+    "psql *", "redis-cli *",
+    "curl *", "httpie *",
+    "git status", "git diff", "git add", "git commit",
+    "make *", "just *",
+    "ls *", "cat *", "mkdir *",
+]
+
+[mcp]
+servers = [
+    { name = "filesystem", command = "npx @anthropic-ai/mcp-filesystem" },
+    { name = "postgres",   command = "npx @anthropic-ai/mcp-postgres", env = { DATABASE_URL = "$DATABASE_URL" } },
+]
+
+[loop]
+max_iterations = 50
+checkpoint_interval = 5
+timeout_minutes = 90
+completion_signal = "LOOP_COMPLETE"
+
+[loop.backpressure]
+build = "cargo build"              # Or: go build ./..., npm run build
+test = "cargo test"                # Or: go test ./..., pytest
+lint = "cargo clippy -- -D warnings"  # Or: golangci-lint run, ruff check
+security = "cargo audit"           # Or: npm audit, pip-audit
+
+[events]
+subscribes = ["plan.complete", "architecture.complete"]
+publishes = ["code.complete", "test.complete", "human.interact"]
+
+[context]
+always_include = [
+    "Cargo.toml",       # Or: go.mod, package.json, pyproject.toml
+    "README.md",
+    "src/lib.rs",       # Or: main.go, app.py
+    ".env.example",
+]
+index_dirs = ["src/", "migrations/", "tests/"]
+
+[memory]
+# Memory categories for cross-iteration persistence
+types = ["Patterns", "Decisions", "Fixes", "Context"]
+persist_path = ".ralph/agent/memories.md"
