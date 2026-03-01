@@ -1,0 +1,60 @@
+flowchart TD
+    subgraph Coordinator["HatlessRalph Coordinator"]
+        direction TB
+        OBJ["Objective\n'Build user dashboard'"]
+        EB["Event Bus\n(routes events between hats)"]
+        SKILL["Skill Index\n(available capabilities)"]
+        GUIDE["Human Guidance\n(from Telegram)"]
+    end
+
+    subgraph HatGraph["Hat Graph (Event-Driven Transitions)"]
+        direction LR
+
+        subgraph PlannerHat["Planner Hat"]
+            P_MODEL["Model: Opus"]
+            P_SUB["Subscribes:\nproject.start\nreview.fail"]
+            P_PUB["Publishes:\nplan.complete\nhuman.interact"]
+            P_INST["Instructions:\n'Analyze objective,\ncreate step-by-step plan'"]
+        end
+
+        subgraph CoderHat["Coder Hat"]
+            C_MODEL["Model: Sonnet"]
+            C_SUB["Subscribes:\nplan.complete"]
+            C_PUB["Publishes:\ncode.complete\nhuman.interact"]
+            C_INST["Instructions:\n'Follow plan exactly,\nbuild one component at a time'"]
+        end
+
+        subgraph ReviewerHat["Reviewer Hat"]
+            R_MODEL["Model: Opus"]
+            R_SUB["Subscribes:\ncode.complete"]
+            R_PUB["Publishes:\nreview.pass\nreview.fail"]
+            R_INST["Instructions:\n'Check bugs, security,\nperformance, plan adherence'"]
+        end
+
+        subgraph DeployerHat["Deployer Hat"]
+            D_MODEL["Model: Sonnet"]
+            D_SUB["Subscribes:\nreview.pass"]
+            D_PUB["Publishes:\ndeploy.complete\nhuman.interact"]
+            D_INST["Instructions:\n'Ship artifact,\nverify deployment'"]
+        end
+    end
+
+    PlannerHat -->|"plan.complete"| CoderHat
+    CoderHat -->|"code.complete"| ReviewerHat
+    ReviewerHat -->|"review.pass"| DeployerHat
+    ReviewerHat -->|"review.fail"| CoderHat
+
+    Coordinator -->|"Selects hat based\non event bus state"| HatGraph
+
+    subgraph Topologies["Per-Project Hat Topologies"]
+        direction TB
+        T1["Web Frontend:\ndesigner -> coder -> reviewer -> deployer"]
+        T2["Systems/Backend:\narchitect -> coder -> tester -> security -> deployer"]
+        T3["Data Pipeline:\nschema-designer -> builder -> validator -> documenter"]
+        T4["Bug Fix:\ninvestigator -> fixer -> tester -> reviewer"]
+    end
+
+    style PlannerHat fill:#6644cc,color:#fff
+    style CoderHat fill:#2266bb,color:#fff
+    style ReviewerHat fill:#cc4422,color:#fff
+    style DeployerHat fill:#228844,color:#fff

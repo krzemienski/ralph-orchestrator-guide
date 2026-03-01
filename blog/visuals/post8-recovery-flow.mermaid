@@ -1,0 +1,58 @@
+sequenceDiagram
+    participant U as User/Trigger
+    participant R1 as Session 1 (dies)
+    participant FS as Filesystem (.ralph/)
+    participant TG as Telegram Bot
+    participant R2 as Session 2 (recovers)
+
+    Note over R1: Normal operation begins
+    U->>R1: ralph run --config loop.toml "Build API"
+    R1->>FS: Write initial state (iteration=0, hat=planner)
+
+    loop Iterations 1-12 (normal)
+        R1->>FS: Execute iteration, update state
+        R1->>FS: Write checkpoint every 3 iterations
+        R1->>FS: Update tasks.jsonl (mark completed)
+        R1->>FS: Append to memories.md
+    end
+
+    R1->>FS: Checkpoint at iteration 12\n{hat: coder, tasks: 3/8 done, cost: $0.47}
+    R1->>TG: Checkpoint notification
+
+    Note over R1: SESSION DIES\n(crash, timeout, network loss,\ncontext window exhaustion)
+    R1--xFS: Mid-iteration work lost\n(iteration 13 never checkpointed)
+
+    Note over FS: State file intact on disk:\nloop-state.json has iteration=12\ntasks.jsonl has 3 completed\nmemories.md has 12 iterations of notes
+
+    TG->>U: No heartbeat detected\n(or user notices stale status)
+
+    Note over R2: Recovery begins
+    U->>R2: ralph run --config loop.toml --resume
+
+    R2->>FS: Read loop-state.json
+    Note over R2: Found: iteration=12, hat=coder\n5 tasks remaining
+
+    R2->>FS: Read tasks.jsonl
+    Note over R2: 3 completed, 2 in_progress\n(in_progress reset to pending)
+
+    R2->>FS: Read memories.md
+    Note over R2: Load 12 iterations of context
+
+    R2->>FS: Read guidance.jsonl
+    Note over R2: Check for human guidance\nsent while session was dead
+
+    R2->>FS: Write state: {status: resumed,\niteration: 12, hat: coder}
+    R2->>TG: "Loop resumed from iteration 12\n5 tasks remaining"
+
+    loop Iterations 13-25 (recovered)
+        R2->>FS: Execute iteration from fresh context
+        R2->>FS: Write checkpoint every 3 iterations
+        R2->>FS: Update tasks.jsonl
+        R2->>FS: Append to memories.md
+    end
+
+    R2->>FS: All tasks complete
+    R2->>FS: Write final state: {status: complete,\niteration: 25, tasks: 8/8}
+    R2->>TG: "All tasks complete.\nTotal cost: $1.23"
+
+    Note over FS: Recovery preserved:\n- No duplicate work (resumed at 12)\n- In-progress tasks safely retried\n- Memory continuity maintained\n- Cost accounting accurate

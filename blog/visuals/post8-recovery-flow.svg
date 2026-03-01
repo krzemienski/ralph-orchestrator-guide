@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1049.4 1136" width="1049.4" height="1136" style="--bg:#0d1117;--fg:#e6edf3;--line:#3d444d;--accent:#4493f8;--muted:#9198a1;background:var(--bg)">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  svg {
+    /* Derived from --bg and --fg (overridable via --line, --accent, etc.) */
+    --_text:          var(--fg);
+    --_text-sec:      var(--muted, color-mix(in srgb, var(--fg) 60%, var(--bg)));
+    --_text-muted:    var(--muted, color-mix(in srgb, var(--fg) 40%, var(--bg)));
+    --_text-faint:    color-mix(in srgb, var(--fg) 25%, var(--bg));
+    --_line:          var(--line, color-mix(in srgb, var(--fg) 30%, var(--bg)));
+    --_arrow:         var(--accent, color-mix(in srgb, var(--fg) 50%, var(--bg)));
+    --_node-fill:     var(--surface, color-mix(in srgb, var(--fg) 3%, var(--bg)));
+    --_node-stroke:   var(--border, color-mix(in srgb, var(--fg) 20%, var(--bg)));
+    --_group-fill:    var(--bg);
+    --_group-hdr:     color-mix(in srgb, var(--fg) 5%, var(--bg));
+    --_inner-stroke:  color-mix(in srgb, var(--fg) 12%, var(--bg));
+    --_key-badge:     color-mix(in srgb, var(--fg) 10%, var(--bg));
+  }
+</style>
+<defs>
+  <marker id="seq-arrow" markerWidth="8" markerHeight="4.8" refX="8" refY="2.4" orient="auto-start-reverse">
+    <polygon points="0 0, 8 2.4, 0 4.8" fill="var(--_arrow)" />
+  </marker>
+  <marker id="seq-arrow-open" markerWidth="8" markerHeight="4.8" refX="8" refY="2.4" orient="auto-start-reverse">
+    <polyline points="0 0, 8 2.4, 0 4.8" fill="none" stroke="var(--_arrow)" stroke-width="1" />
+  </marker>
+</defs>
+<rect x="188.82000000000005" y="158" width="381.40000000000003" height="180" rx="0" ry="0" fill="none" stroke="var(--_node-stroke)" stroke-width="1" />
+<rect x="188.82000000000005" y="158" width="213.77999999999997" height="18" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="194.82000000000005" y="167" dy="0.35em" font-size="11" font-weight="600" fill="var(--_text-sec)">loop [Iterations 1-12 (normal)]</text>
+<rect x="375.22" y="786" width="567.8" height="180" rx="0" ry="0" fill="none" stroke="var(--_node-stroke)" stroke-width="1" />
+<rect x="375.22" y="786" width="239.29999999999998" height="18" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="381.22" y="795" dy="0.35em" font-size="11" font-weight="600" fill="var(--_text-sec)">loop [Iterations 13-25 (recovered)]</text>
+<line x1="99.92000000000004" y1="70" x2="99.92000000000004" y2="1106" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line x1="272.02000000000004" y1="70" x2="272.02000000000004" y2="1106" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line x1="472.72" y1="70" x2="472.72" y2="1106" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line x1="659.1200000000001" y1="70" x2="659.1200000000001" y2="1106" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line x1="845.52" y1="70" x2="845.52" y2="1106" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" />
+<line x1="99.92000000000004" y1="90" x2="272.02000000000004" y2="90" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="185.97000000000003" y="84" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">ralph run --config loop.toml &quot;Build API&quot;</text>
+<line x1="272.02000000000004" y1="130" x2="472.72" y2="130" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="124" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Write initial state (iteration=0, hat=planner)</text>
+<line x1="272.02000000000004" y1="198" x2="472.72" y2="198" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="192" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Execute iteration, update state</text>
+<line x1="272.02000000000004" y1="238" x2="472.72" y2="238" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="232" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Write checkpoint every 3 iterations</text>
+<line x1="272.02000000000004" y1="278" x2="472.72" y2="278" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="272" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Update tasks.jsonl (mark completed)</text>
+<line x1="272.02000000000004" y1="318" x2="472.72" y2="318" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="312" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Append to memories.md</text>
+<line x1="272.02000000000004" y1="358" x2="472.72" y2="358" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="352" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Checkpoint at iteration 12\n{hat: coder, tasks: 3/8 done, cost: $0.47}</text>
+<line x1="272.02000000000004" y1="398" x2="659.1200000000001" y2="398" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="465.57000000000005" y="392" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Checkpoint notification</text>
+<line x1="272.02000000000004" y1="438" x2="472.72" y2="438" stroke="var(--_line)" stroke-width="0.75" stroke-dasharray="6 4" marker-end="url(#seq-arrow)" />
+<text x="372.37" y="432" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Mid-iteration work lost\n(iteration 13 never checkpointed)</text>
+<line x1="659.1200000000001" y1="478" x2="99.92000000000004" y2="478" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="379.5200000000001" y="472" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">No heartbeat detected\n(or user notices stale status)</text>
+<line x1="99.92000000000004" y1="518" x2="845.52" y2="518" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="472.72" y="512" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">ralph run --config loop.toml --resume</text>
+<line x1="845.52" y1="558" x2="472.72" y2="558" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="552" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Read loop-state.json</text>
+<line x1="845.52" y1="598" x2="472.72" y2="598" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="592" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Read tasks.jsonl</text>
+<line x1="845.52" y1="638" x2="472.72" y2="638" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="632" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Read memories.md</text>
+<line x1="845.52" y1="678" x2="472.72" y2="678" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="672" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Read guidance.jsonl</text>
+<line x1="845.52" y1="718" x2="472.72" y2="718" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="712" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Write state: {status: resumed,\niteration: 12, hat: coder}</text>
+<line x1="845.52" y1="758" x2="659.1200000000001" y2="758" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="752.32" y="752" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">&quot;Loop resumed from iteration 12\n5 tasks remaining&quot;</text>
+<line x1="845.52" y1="826" x2="472.72" y2="826" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="820" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Execute iteration from fresh context</text>
+<line x1="845.52" y1="866" x2="472.72" y2="866" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="860" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Write checkpoint every 3 iterations</text>
+<line x1="845.52" y1="906" x2="472.72" y2="906" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="900" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Update tasks.jsonl</text>
+<line x1="845.52" y1="946" x2="472.72" y2="946" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="940" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Append to memories.md</text>
+<line x1="845.52" y1="986" x2="472.72" y2="986" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="980" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">All tasks complete</text>
+<line x1="845.52" y1="1026" x2="472.72" y2="1026" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="659.12" y="1020" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">Write final state: {status: complete,\niteration: 25, tasks: 8/8}</text>
+<line x1="845.52" y1="1066" x2="659.1200000000001" y2="1066" stroke="var(--_line)" stroke-width="0.75" marker-end="url(#seq-arrow)" />
+<text x="752.32" y="1060" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-muted)">&quot;All tasks complete.\nTotal cost: $1.23&quot;</text>
+<rect x="198.24000000000004" y="74" width="147.56" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="339.80000000000007,74 345.80000000000007,80 339.80000000000007,80" fill="var(--_inner-stroke)" />
+<text x="272.02000000000004" y="87.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">Normal operation begins</text>
+<rect x="58.10000000000002" y="402" width="427.84000000000003" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="479.94000000000005,402 485.94000000000005,408 479.94000000000005,408" fill="var(--_inner-stroke)" />
+<text x="272.02000000000004" y="415.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">SESSION DIES\n(crash, timeout, network loss,\ncontext window exhaustion)</text>
+<rect x="95.78000000000003" y="442" width="753.88" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="843.6600000000001,442 849.6600000000001,448 843.6600000000001,448" fill="var(--_inner-stroke)" />
+<text x="472.72" y="455.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">State file intact on disk:\nloop-state.json has iteration=12\ntasks.jsonl has 3 completed\nmemories.md has 12 iterations of notes</text>
+<rect x="785.52" y="482" width="120" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="899.52,482 905.52,488 899.52,488" fill="var(--_inner-stroke)" />
+<text x="845.52" y="495.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">Recovery begins</text>
+<rect x="697.3800000000001" y="562" width="296.28000000000003" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="987.6600000000001,562 993.6600000000001,568 987.6600000000001,568" fill="var(--_inner-stroke)" />
+<text x="845.5200000000001" y="575.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">Found: iteration=12, hat=coder\n5 tasks remaining</text>
+<rect x="671.6400000000001" y="602" width="347.76" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="1013.4000000000001,602 1019.4000000000001,608 1013.4000000000001,608" fill="var(--_inner-stroke)" />
+<text x="845.5200000000001" y="615.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">3 completed, 2 in_progress\n(in_progress reset to pending)</text>
+<rect x="754.5799999999999" y="642" width="181.88" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="930.4599999999999,642 936.4599999999999,648 930.4599999999999,648" fill="var(--_inner-stroke)" />
+<text x="845.52" y="655.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">Load 12 iterations of context</text>
+<rect x="685.94" y="682" width="319.16" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="999.1000000000001,682 1005.1000000000001,688 999.1000000000001,688" fill="var(--_inner-stroke)" />
+<text x="845.5200000000001" y="695.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">Check for human guidance\nsent while session was dead</text>
+<rect x="30" y="1070" width="885.44" height="27" fill="var(--_group-hdr)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+<polygon points="909.44,1070 915.44,1076 909.44,1076" fill="var(--_inner-stroke)" />
+<text x="472.72" y="1083.5" text-anchor="middle" dy="0.35em" font-size="11" font-weight="400" fill="var(--_text-muted)">Recovery preserved:\n- No duplicate work (resumed at 12)\n- In-progress tasks safely retried\n- Memory continuity maintained\n- Cost accounting accurate</text>
+<rect x="41.02000000000004" y="30" width="117.80000000000001" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="99.92000000000004" y="50" text-anchor="middle" dy="0.35em" font-size="13" font-weight="500" fill="var(--_text)">User/Trigger</text>
+<rect x="198.82000000000005" y="30" width="146.4" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="272.02000000000004" y="50" text-anchor="middle" dy="0.35em" font-size="13" font-weight="500" fill="var(--_text)">Session 1 (dies)</text>
+<rect x="385.22" y="30" width="175" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="472.72" y="50" text-anchor="middle" dy="0.35em" font-size="13" font-weight="500" fill="var(--_text)">Filesystem (.ralph/)</text>
+<rect x="600.2200000000001" y="30" width="117.80000000000001" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="659.1200000000001" y="50" text-anchor="middle" dy="0.35em" font-size="13" font-weight="500" fill="var(--_text)">Telegram Bot</text>
+<rect x="758.02" y="30" width="175" height="40" rx="4" ry="4" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="1" />
+<text x="845.52" y="50" text-anchor="middle" dy="0.35em" font-size="13" font-weight="500" fill="var(--_text)">Session 2 (recovers)</text>
+</svg>

@@ -1,0 +1,55 @@
+stateDiagram-v2
+    [*] --> Initialize: ralph run --config loop.toml "objective"
+
+    Initialize --> LoadState: Check for existing state
+    LoadState --> FreshStart: No state file found
+    LoadState --> ResumeFromCheckpoint: State file exists\n(resume_on_start = true)
+
+    FreshStart --> ReadContext: Create initial state
+    ResumeFromCheckpoint --> ReadContext: Restore iteration counter,\ncurrent hat, task progress
+
+    state IterationLoop {
+        ReadContext --> SelectHat: Load specs, plans,\nmemories, guidance
+        SelectHat --> ExecuteHat: Coordinator picks hat\nbased on event bus
+        ExecuteHat --> BackpressureGates: Agent works in\nhat-scoped context
+
+        BackpressureGates --> GatePass: All gates pass\n(build, lint, test)
+        BackpressureGates --> GateFail: Gate failed
+
+        GateFail --> ExecuteHat: Agent must fix\nand retry
+
+        GatePass --> CheckpointDecision: Iteration complete
+        CheckpointDecision --> WriteCheckpoint: iteration % interval == 0
+        CheckpointDecision --> CheckCompletion: Not checkpoint iteration
+
+        WriteCheckpoint --> PersistState: Atomic write to\nloop-state.json
+        PersistState --> NotifyTelegram: Send checkpoint\nnotification
+        NotifyTelegram --> CheckCompletion
+
+        CheckCompletion --> StopHookCheck: Check if work remains
+    end
+
+    state StopHookDecision <<choice>>
+    StopHookCheck --> StopHookDecision: stop-hook.sh runs
+
+    StopHookDecision --> ReadContext: Tasks remain\n"The boulder never stops"
+    StopHookDecision --> KillSignal: kill.signal detected
+    StopHookDecision --> PauseState: pause.flag detected
+    StopHookDecision --> Complete: All tasks done
+
+    KillSignal --> [*]: Force terminate
+    PauseState --> [*]: Pause (resume later)
+    Complete --> FinalState: Write final state
+
+    FinalState --> [*]: Loop complete\n(notify Telegram)
+
+    note right of PersistState
+        State includes:
+        - iteration count
+        - current_hat
+        - task_progress
+        - memory_snapshot
+        - cost_accumulator
+        Written atomically via
+        tmp file + rename
+    end note
