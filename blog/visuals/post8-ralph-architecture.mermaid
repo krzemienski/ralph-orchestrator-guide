@@ -1,0 +1,42 @@
+flowchart TD
+    subgraph ControlPlane["Telegram Control Plane"]
+        TG["Telegram Bot\n(start / stop / status)"]
+    end
+
+    subgraph Coordinator["HatlessRalph Coordinator"]
+        RC["Ralph Coordinator\n(orchestrates hat graph)"]
+        EB["Event Bus\n(task events &amp; signals)"]
+        MQ["Merge Queue\n(serialises PR merges)"]
+        SP["State Persistence\n(phase + task ledger)"]
+    end
+
+    subgraph HatGraph["Hat Graph"]
+        PL["Planner\n(break goal into tasks)"]
+        CO["Coder\n(implement task)"]
+        RV["Reviewer\n(verify output)"]
+        DP["Deployer\n(ship artifact)"]
+
+        PL --> CO
+        CO --> RV
+        RV -->|review.pass| DP
+        RV -->|review.fail| CO
+    end
+
+    subgraph Worktrees["Parallel Worktrees"]
+        WT1["Worktree A\n(agent instance)"]
+        WT2["Worktree B\n(agent instance)"]
+        WT3["Worktree C\n(agent instance)"]
+    end
+
+    TG -->|commands| RC
+    RC -->|drives| HatGraph
+    RC --- EB
+    RC --- MQ
+    RC --- SP
+    EB -->|dispatch| WT1
+    EB -->|dispatch| WT2
+    EB -->|dispatch| WT3
+    WT1 -->|results| MQ
+    WT2 -->|results| MQ
+    WT3 -->|results| MQ
+    MQ -->|merged output| SP
