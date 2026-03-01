@@ -277,6 +277,20 @@ This is **Part 6** of the [Agentic Development](https://github.com/krzemienski) 
 
 ---
 
+## Troubleshooting
+
+### Ralph loop never terminates
+Check that `check_completion()` returns `True` when all tasks are done. If using `max_iterations`, ensure it's set to a reasonable value (default: 10).
+
+### State file corruption
+Ralph persists state as JSON. If the state file becomes corrupted (e.g., from a crash during write), delete it and restart. State files are in the working directory.
+
+### Task callbacks not executing
+Ensure your task runner function matches the expected signature: `def runner(task: RalphTask) -> bool`. Return `True` for success, `False` for failure.
+
+### Duration formatting shows 0s
+The timer starts when `ralph.start()` is called. If iterating manually, ensure you call `start()` before the first `iterate()`.
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).
